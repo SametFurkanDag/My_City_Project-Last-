@@ -11,5 +11,6 @@ namespace My_City_Project.Repositories.Interfaces
         void Add(Reseller reseller);
         void Update(Reseller reseller);
         void Delete(Guid id);
+        List<Reseller> GetDeleted();
     }
 }

@@ -22,15 +22,14 @@ namespace My_City_Project.Repositories.Implementations
             _context.SaveChanges();
         }
 
-      
+        
         public List<Product> GetAll()
         {
-            return _context.Products.ToList();
+            return _context.Products.Where(p => !p.IsDeleted).ToList();
         }
-
         public Product GetById(Guid id)
         {
-            return _context.Products.Find(id);
+            return _context.Products.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
         public void Update(Product product)
@@ -39,15 +38,19 @@ namespace My_City_Project.Repositories.Implementations
             _context.SaveChanges();
         }
 
-        
         public void Delete(Guid id)
         {
             var product = _context.Products.Find(id);
-            if (product != null)
+            if (product != null && !product.IsDeleted)
             {
-                _context.Products.Remove(product);
+                product.IsDeleted = true;
                 _context.SaveChanges();
             }
         }
+
+        public List<Product> GetDeleted()
+        {
+            return _context.Products.Where(p => p.IsDeleted).ToList();
+        } 
     }
 }

@@ -16,41 +16,40 @@ namespace My_City_Project.Repositories.Implementations
             _context = context;
         }
 
-        // AddPlace -> Add olarak düzeltildi
         public void Add(Places place)
         {
             _context.Places.Add(place);
             _context.SaveChanges();
         }
 
-        // GetAllPlaces -> GetAll olarak düzeltildi
         public List<Places> GetAll()
         {
             return _context.Places.ToList();
         }
-
-        // GetPlaceById -> GetById olarak düzeltildi
         public Places GetById(Guid id)
         {
             return _context.Places.Find(id);
         }
 
-        // UpdatePlace -> Update olarak düzeltildi
         public void Update(Places place)
         {
             _context.Places.Update(place);
             _context.SaveChanges();
         }
 
-        // DeletePlace -> Delete olarak düzeltildi
         public void Delete(Guid id)
         {
             var place = _context.Places.Find(id);
-            if (place != null)
+            if (place != null && !place.IsDeleted)
             {
-                _context.Places.Remove(place);
+                place.IsDeleted = true;
                 _context.SaveChanges();
             }
+        }
+
+        public List<Places> GetDeleted()
+        {
+            return _context.Places.Where(p => p.IsDeleted).ToList();
         }
     }
 }

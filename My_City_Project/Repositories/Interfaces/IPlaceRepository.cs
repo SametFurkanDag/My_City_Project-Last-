@@ -11,5 +11,6 @@ namespace My_City_Project.Repositories.Interfaces
         void Add(Places place);
         void Update(Places place);
         void Delete(Guid id);
+        List<Places> GetDeleted();
     }
 }

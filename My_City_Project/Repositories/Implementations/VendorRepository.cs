@@ -41,11 +41,15 @@ namespace My_City_Project.Repositories.Implementations
         public void Delete(Guid id)
         {
             var vendor = _context.Vendors.Find(id);
-            if (vendor != null)
+            if (vendor != null && !vendor.IsDeleted)
             {
-                _context.Vendors.Remove(vendor);
+                vendor.IsDeleted = true;
                 _context.SaveChanges();
             }
+        }
+        public List<Vendor> GetDeleted()
+        {
+            return _context.Vendors.Where(v => v.IsDeleted).ToList();
         }
     }
 }

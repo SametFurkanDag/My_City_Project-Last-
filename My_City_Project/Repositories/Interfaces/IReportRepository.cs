@@ -11,5 +11,6 @@ namespace My_City_Project.Repositories.Interfaces
         void Add(Report report);
         void Update(Report report);
         void Delete(Guid id);
+        List<Report> GetDeleted();
     }
 }

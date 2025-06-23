@@ -11,5 +11,6 @@ namespace My_City_Project.Repositories.Interfaces
         void Add(Cart cart);
         void Update(Cart cart);
         void Delete(Guid id);
+        List<Cart> GetDeleted();
     }
 }

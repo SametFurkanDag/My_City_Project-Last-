@@ -41,11 +41,16 @@ namespace My_City_Project.Repositories.Implementations
         public void Delete(Guid id)
         {
             var cart = _context.Carts.Find(id);
-            if (cart != null)
+            if (cart != null && !cart.IsDeleted)
             {
-                _context.Carts.Remove(cart);
+                cart.IsDeleted = true;
                 _context.SaveChanges();
             }
+        }
+
+        public List<Cart> GetDeleted()
+        {
+            return _context.Carts.Where(p => p.IsDeleted).ToList();
         }
     }
 }

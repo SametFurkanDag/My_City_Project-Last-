@@ -41,11 +41,17 @@ namespace My_City_Project.Repositories.Implementations
         public void Delete(Guid id)
         {
             var order = _context.Orders.Find(id);
-            if (order != null)
+            if (order != null && !order.IsDeleted)
             {
-                _context.Orders.Remove(order);
+                order.IsDeleted = true;
                 _context.SaveChanges();
             }
         }
+
+        public List<Order> GetDeleted()
+        {
+            return _context.Orders.Where(p => p.IsDeleted).ToList();
+        }
+
     }
 }

@@ -11,5 +11,6 @@ namespace My_City_Project.Repositories.Interfaces
         void Add(Order order);
         void Update(Order order);
         void Delete(Guid id);
+        public List<Order> GetDeleted();
     }
 }

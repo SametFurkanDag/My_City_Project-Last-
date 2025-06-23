@@ -41,11 +41,17 @@ namespace My_City_Project.Repositories.Implementations
         public void Delete(Guid id)
         {
             var report = _context.Reports.Find(id);
-            if (report != null)
+            if (report != null && !report.IsDeleted)
             {
-                _context.Reports.Remove(report);
+                report.IsDeleted = true;
                 _context.SaveChanges();
             }
         }
+
+        public List<Report> GetDeleted()
+        {
+            return _context.Reports.Where(p => p.IsDeleted).ToList();
+        }
+
     }
 }

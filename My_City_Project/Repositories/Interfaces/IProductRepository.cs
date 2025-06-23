@@ -9,5 +9,6 @@ namespace My_City_Project.Repositories.Interfaces
         void Add(Product product);
         void Update(Product product);
         void Delete(Guid id);
+        List<Product> GetDeleted();
     }
 }

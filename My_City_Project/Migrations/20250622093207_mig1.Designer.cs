@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using My_City_Project.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace My_City_Project.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250622093207_mig1")]
+    partial class mig1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,23 +27,14 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Cart", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -50,18 +44,12 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.CartItem", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("CartItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CartId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
@@ -72,10 +60,7 @@ namespace My_City_Project.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
+                    b.HasKey("CartItemId");
 
                     b.HasIndex("CartId");
 
@@ -86,15 +71,9 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Order", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("OrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
@@ -106,13 +85,10 @@ namespace My_City_Project.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId");
 
                     b.HasIndex("UserId");
 
@@ -124,12 +100,6 @@ namespace My_City_Project.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
@@ -143,9 +113,6 @@ namespace My_City_Project.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
@@ -157,15 +124,9 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Places", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("PlaceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("PlaceLocation")
                         .IsRequired()
@@ -175,13 +136,10 @@ namespace My_City_Project.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("PlaceId");
 
                     b.HasIndex("UserId");
 
@@ -190,15 +148,9 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -207,13 +159,10 @@ namespace My_City_Project.Migrations
                     b.Property<decimal>("ProductPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("VendorId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("ProductId");
 
                     b.HasIndex("VendorId");
 
@@ -222,19 +171,13 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Report", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ReportId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("timestamp with time zone");
@@ -243,13 +186,10 @@ namespace My_City_Project.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("VendorId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("ReportId");
 
                     b.HasIndex("VendorId");
 
@@ -258,15 +198,9 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Reseller", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ResellerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ResellerLocation")
                         .IsRequired()
@@ -276,13 +210,10 @@ namespace My_City_Project.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("ResellerId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -296,22 +227,13 @@ namespace My_City_Project.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -324,18 +246,9 @@ namespace My_City_Project.Migrations
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Vendor", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("VendorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -344,7 +257,7 @@ namespace My_City_Project.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("VendorId");
 
                     b.HasIndex("UserId")
                         .IsUnique();

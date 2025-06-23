@@ -10,7 +10,7 @@ namespace My_City_Project.Services.Implementations
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly ApplicationContext _context; // SaveChanges için
+        private readonly ApplicationContext _context; 
 
         public ProductService(IProductRepository productRepository, ApplicationContext context)
         {
@@ -30,10 +30,8 @@ namespace My_City_Project.Services.Implementations
 
         public void CreateProduct(Product product)
         {
-            // Burada ürünü eklemeden önce iş kuralları kontrol edilebilir.
-            // Örneğin: Aynı isimde başka bir ürün var mı?
             _productRepository.Add(product);
-            _context.SaveChanges(); // İşlem tamamlandı, değişiklikleri kaydet.
+            _context.SaveChanges(); 
         }
 
         public void UpdateProduct(Product product)
@@ -44,7 +42,7 @@ namespace My_City_Project.Services.Implementations
 
         public void DeleteProduct(Guid id)
         {
-            _productRepository.Delete(id); // Bu metodun içinde zaten fiziksel silme yapılıyor.
+            _productRepository.Delete(id); 
             _context.SaveChanges();
         }
     }

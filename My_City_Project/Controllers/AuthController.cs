@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Data;
+using My_City_Project.Helpers;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services;
+using My_City_Project.Services.Interfaces;
 using System;
 using System.Linq;
 
@@ -14,11 +16,13 @@ namespace My_City_Project.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly TokenService _tokenService;
+        private readonly IPasswordHelper _passwordHelper;
 
-        public AuthController(ApplicationContext context, TokenService tokenService)
+        public AuthController(ApplicationContext context, TokenService tokenService, IPasswordHelper passwordHelper)
         {
             _context = context;
             _tokenService = tokenService;
+            _passwordHelper = passwordHelper;
         }
 
         [HttpPost("register")]
@@ -31,8 +35,8 @@ namespace My_City_Project.Controllers
             {
                 Id = Guid.NewGuid(),
                 Username = request.Username,
-                PasswordHash = PasswordHelper.HashPassword(request.Password),
-                Role = request.Role ?? "User"  
+                PasswordHash = _passwordHelper.HashPassword(request.Password),
+                Role = request.Role ?? "User"
             };
 
             _context.Users.Add(user);
@@ -48,7 +52,7 @@ namespace My_City_Project.Controllers
             if (user == null)
                 return Unauthorized("Geçersiz kullanıcı adı veya şifre");
 
-            bool validPassword = PasswordHelper.VerifyPassword(request.Password, user.PasswordHash);
+            bool validPassword = _passwordHelper.VerifyPassword(request.Password, user.PasswordHash);
             if (!validPassword)
                 return Unauthorized("Geçersiz kullanıcı adı veya şifre");
 
@@ -61,25 +65,12 @@ namespace My_City_Project.Controllers
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Role { get; set; }  
+        public string Role { get; set; }
     }
 
     public class LoginRequest
     {
         public string Username { get; set; }
         public string Password { get; set; }
-    }
-
-    public static class PasswordHelper
-    {
-        public static string HashPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(password);
-        }
-
-        public static bool VerifyPassword(string password, string hashedPassword)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-        }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using My_City_Project.Data;
-using My_City_Project.Extensions; 
-using My_City_Project.Middleware;
+using My_City_Project.Extensions;
+using My_City_Project.Helpers;
+
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +29,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IPasswordHelper, BcryptPasswordHelper>();
+
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.ConfigureExceptionMiddleware(); 
+
 
 if (app.Environment.IsDevelopment())
 {
