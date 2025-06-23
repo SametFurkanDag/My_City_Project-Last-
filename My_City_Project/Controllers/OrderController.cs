@@ -63,7 +63,7 @@ namespace My_City_Project.Controllers
         [HttpPut("{id:guid}")]
         public IActionResult UpdateOrder(Guid id, [FromBody] Order updatedOrder)
         {
-            if (id != updatedOrder.OrderId)
+            if (id != updatedOrder.Id)
             {
                 return BadRequest("ID uyuşmazlığı.");
             }

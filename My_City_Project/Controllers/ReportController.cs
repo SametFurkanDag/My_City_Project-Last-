@@ -38,13 +38,13 @@ namespace My_City_Project.Controllers
         public IActionResult CreateReport(Report report)
         {
             _reportService.CreateReport(report);
-            return CreatedAtAction(nameof(GetReportById), new { id = report.ReportId }, report);
+            return CreatedAtAction(nameof(GetReportById), new { id = report.Id }, report);
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateReport(Guid id, Report report)
         {
-            if (id != report.ReportId)
+            if (id != report.Id)
                 return BadRequest("ID mismatch");
 
             _reportService.UpdateReport(report);

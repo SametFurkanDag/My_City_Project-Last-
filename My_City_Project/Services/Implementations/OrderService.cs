@@ -36,7 +36,7 @@ namespace My_City_Project.Services.Implementations
             _orderRepository.Add(order);
             foreach (var item in items)
             {
-                item.OrderId = order.OrderId;
+                item.OrderId = order.Id;
                 _orderItemRepository.Add(item);
             }
             _context.SaveChanges();

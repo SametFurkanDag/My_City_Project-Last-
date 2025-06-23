@@ -48,7 +48,7 @@ namespace My_City_Project.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateReseller(Guid id, Reseller reseller)
         {
-            if (id != reseller.ResellerId)
+            if (id != reseller.Id)
                 return BadRequest("ID mismatch");
 
             _resellerService.UpdateReseller(reseller);

@@ -38,13 +38,13 @@ namespace My_City_Project.Controllers
         [HttpPost]
         public IActionResult CreateProduct([FromBody] Product product)
         {
-            if (product.ProductId == Guid.Empty)
+            if (product.Id == Guid.Empty)
             {
-                product.ProductId = Guid.NewGuid();
+                product.Id = Guid.NewGuid();
             }
 
             _productService.CreateProduct(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.ProductId }, "Ürün eklendi");
+            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, "Ürün eklendi");
         }
 
         [HttpPut("{id:guid}")]
@@ -54,7 +54,7 @@ namespace My_City_Project.Controllers
             if (existingProduct == null)
                 return NotFound("Ürün bulunamadı");
 
-            if (product.ProductId != id)
+            if (product.Id != id)
                 return BadRequest("Ürün ID'si rota ID'si ile eşleşmiyor.");
 
             _productService.UpdateProduct(product);

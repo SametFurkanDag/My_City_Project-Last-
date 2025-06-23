@@ -21,24 +21,21 @@ namespace My_City_Project.Middleware
         {
             try
             {
-                // Normal istek işleme
                 await _next(context);
             }
             catch (Exception ex)
             {
-                // Eğer bir hata yakalanırsa, bu blok çalışır
-                _logger.LogError($"Something went wrong: {ex}");
+                _logger.LogError($"Bir şeyler yanlış gitti: {ex}");
                 await HandleExceptionAsync(context, ex);
             }
         }
 
-        // Hata mesajını döndüren metod
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var result = new { message = "An unexpected error occurred. Please try again later." };
+            var result = new { message = "Beklenmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyiniz." };
             return context.Response.WriteAsJsonAsync(result);
         }
     }

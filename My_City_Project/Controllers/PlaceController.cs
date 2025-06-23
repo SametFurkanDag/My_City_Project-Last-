@@ -36,13 +36,13 @@ namespace My_City_Project.Controllers
         public IActionResult CreatePlace(Places place)
         {
             _placeService.CreatePlace(place);
-            return CreatedAtAction(nameof(GetPlaceById), new { id = place.PlaceId }, place);
+            return CreatedAtAction(nameof(GetPlaceById), new { id = place.Id }, place);
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdatePlace(Guid id, Places place)
         {
-            if (id != place.PlaceId)
+            if (id != place.Id)
                 return BadRequest("ID mismatch");
 
             _placeService.UpdatePlace(place);

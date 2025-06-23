@@ -21,7 +21,7 @@ namespace My_City_Project.Controllers
         [HttpGet]
         public IActionResult GetAllCarts()
         {
-            // Mevcut ICartService'teki GetAllCarts() metodunu çağırır.
+           
             var carts = _cartService.GetAllCarts();
             return Ok(carts);
         }
@@ -30,7 +30,7 @@ namespace My_City_Project.Controllers
         [HttpGet("{id:guid}")]
         public IActionResult GetCartById(Guid id)
         {
-            // Mevcut ICartService'teki GetCartById() metodunu çağırır.
+            
             var cart = _cartService.GetCartById(id);
             if (cart == null)
                 return NotFound("Sepet bulunamadı");
@@ -44,23 +44,23 @@ namespace My_City_Project.Controllers
             if (cart == null)
                 return BadRequest();
 
-            // Mevcut ICartService'teki CreateCart() metodunu çağırır.
+        
             _cartService.CreateCart(cart);
 
-            return CreatedAtAction(nameof(GetCartById), new { id = cart.CartId }, "Sepet oluşturuldu");
+            return CreatedAtAction(nameof(GetCartById), new { id = cart.Id }, "Sepet oluşturuldu");
         }
 
         [HttpPut("{id:guid}")]
         public IActionResult UpdateCart(Guid id, [FromBody] Cart cart)
         {
-            if (cart == null || id != cart.CartId)
+            if (cart == null || id != cart.Id)
                 return BadRequest("Geçersiz istek: ID uyuşmazlığı.");
 
             var existingCart = _cartService.GetCartById(id);
             if (existingCart == null)
                 return NotFound("Güncellenecek sepet bulunamadı");
 
-            // Mevcut ICartService'teki UpdateCart() metodunu çağırır.
+       
             _cartService.UpdateCart(cart);
             return NoContent();
         }
@@ -73,7 +73,7 @@ namespace My_City_Project.Controllers
             if (existingCart == null)
                 return NotFound("Silinecek sepet bulunamadı");
 
-            // Mevcut ICartService'teki DeleteCart() metodunu çağırır.
+     
             _cartService.DeleteCart(id);
             return NoContent();
         }

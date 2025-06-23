@@ -36,7 +36,7 @@ namespace My_City_Project.Controllers
         public IActionResult CreateVendor(Vendor vendor)
         {
             _vendorService.CreateVendor(vendor);
-            return CreatedAtAction(nameof(GetVendorById), new { id = vendor.VendorId }, vendor);
+            return CreatedAtAction(nameof(GetVendorById), new { id = vendor.Id }, vendor);
         }
 
         [HttpPut("{id}")]
