@@ -2,9 +2,9 @@
 using My_City_Project.Model.Entities;
 using My_City_Project.Repositories.Interfaces;
 using My_City_Project.Services.Interfaces;
+using Serilog; 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace My_City_Project.Services.Implementations
 {
@@ -23,35 +23,80 @@ namespace My_City_Project.Services.Implementations
 
         public Order GetOrderById(Guid id)
         {
-            return _orderRepository.GetById(id);
+            Log.Information("Sipariş getiriliyor. ID: {OrderId}", id);
+            var order = _orderRepository.GetById(id);
+
+            if (order == null)
+            {
+                Log.Warning("ID {OrderId} ile sipariş bulunamadı.", id);
+            }
+            else
+            {
+                Log.Information("ID {OrderId} ile sipariş bulundu.", id);
+            }
+
+            return order;
         }
 
         public List<Order> GetAllOrders()
         {
-            return _orderRepository.GetAll();
+            Log.Information("Tüm siparişler getiriliyor.");
+            var orders = _orderRepository.GetAll();
+            Log.Information("{Count} adet sipariş bulundu.", orders.Count);
+            return orders;
         }
 
         public void CreateOrder(Order order, List<OrderItem> items)
         {
-            _orderRepository.Add(order);
-            foreach (var item in items)
+            try
             {
-                item.OrderId = order.Id;
-                _orderItemRepository.Add(item);
+                _orderRepository.Add(order);
+                foreach (var item in items)
+                {
+                    item.OrderId = order.Id;
+                    _orderItemRepository.Add(item);
+                }
+                _context.SaveChanges();
+
+                Log.Information("Yeni sipariş oluşturuldu: {@Order} ve {ItemCount} adet sipariş kalemi eklendi.", order, items.Count);
             }
-            _context.SaveChanges();
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Yeni sipariş oluşturulurken hata oluştu: {@Order}", order);
+                throw;
+            }
         }
 
         public void UpdateOrder(Order order)
         {
-            _orderRepository.Update(order);
-            _context.SaveChanges();
+            try
+            {
+                _orderRepository.Update(order);
+                _context.SaveChanges();
+
+                Log.Information("Sipariş güncellendi: {@Order}", order);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Sipariş güncellenirken hata oluştu: {@Order}", order);
+                throw;
+            }
         }
 
         public void DeleteOrder(Guid id)
         {
-            _orderRepository.Delete(id);
-            _context.SaveChanges();
+            try
+            {
+                _orderRepository.Delete(id);
+                _context.SaveChanges();
+
+                Log.Information("ID {OrderId} ile sipariş silindi.", id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "ID {OrderId} ile sipariş silinirken hata oluştu.", id);
+                throw;
+            }
         }
     }
 }
