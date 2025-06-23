@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using My_City_Project.Data;
 using My_City_Project.Extensions;
 using My_City_Project.Helpers;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
 
 using Serilog;
 

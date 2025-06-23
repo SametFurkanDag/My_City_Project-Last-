@@ -17,7 +17,7 @@ namespace My_City_Project.Extensions
                 {
                     dbContext.Users.Add(new User
                     {
-                        Username = "ADMİN",
+                        Username = "ADMIN",
                         PasswordHash = "1234", 
                         Role = "Admin"
                     });

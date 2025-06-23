@@ -21,8 +21,9 @@ namespace My_City_Project.Services.Implementations
         }
 
         public Cart GetCartById(Guid id)
-        {   Log.Information("Sepet getiriliyor. ID: {CartId}", id);
-            var cart= _cartRepository.GetById(id);
+        {
+            Log.Information("Sepet getiriliyor. ID: {CartId}", id);
+            var cart = _cartRepository.GetById(id);
             if (cart == null)
             {
                 Log.Warning("ID {CartId} ile sepet bulunamadı.", id);
@@ -35,8 +36,9 @@ namespace My_City_Project.Services.Implementations
         }
 
         public List<Cart> GetAllCarts()
-        {Log.Information("Tüm sepetler getiriliyor.");
-            var carts= _cartRepository.GetAll();
+        {
+            Log.Information("Tüm sepetler getiriliyor.");
+            var carts = _cartRepository.GetAll();
             Log.Information("{Count} sepet bulundu.", carts.Count);
             return carts;
         }
@@ -54,7 +56,7 @@ namespace My_City_Project.Services.Implementations
                 Log.Error(ex, "Sepet oluşturulurken hata oluştu.");
                 throw;
             }
-            
+
         }
 
         public void UpdateCart(Cart cart)
@@ -69,7 +71,8 @@ namespace My_City_Project.Services.Implementations
             {
                 Log.Error(ex, "Sepet güncellenirken hata oluştu.");
                 throw;
-               
+
+            }
         }
 
         public void DeleteCart(Guid id)
@@ -84,7 +87,8 @@ namespace My_City_Project.Services.Implementations
             {
                 Log.Error(ex, "Sepet silinirken hata oluştu. ID: {CartId}", id);
                 throw;
-                
+
+            }
         }
     }
 }
