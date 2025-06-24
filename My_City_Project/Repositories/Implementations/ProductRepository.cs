@@ -18,6 +18,19 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Add(Product product)
         {
+            if (product.Id == Guid.Empty)
+                product.Id = Guid.NewGuid();
+
+            var exists = _context.Products.Any(p => p.Id == product.Id);
+            if (exists)
+            {
+                throw new Exception("Bu Id ile ürün zaten mevcut.");
+            }
+
+            product.CreatedDate = DateTime.UtcNow;
+            product.UpdatedDate = DateTime.UtcNow;
+            product.IsDeleted = false;
+
             _context.Products.Add(product);
             _context.SaveChanges();
         }

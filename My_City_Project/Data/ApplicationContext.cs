@@ -19,6 +19,7 @@ namespace My_City_Project.Data
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<Reseller> Resellers { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         public static void Initialize(ApplicationContext context)
         {

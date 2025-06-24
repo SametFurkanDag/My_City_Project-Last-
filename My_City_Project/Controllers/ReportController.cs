@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Model.Entities;
+using My_City_Project.Services.Implementations;
 using My_City_Project.Services.Interfaces;
 
 namespace My_City_Project.Controllers
@@ -35,11 +36,19 @@ namespace My_City_Project.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateReport(Report report)
+        public IActionResult CreateReport([FromBody] Report report)
         {
+            if (report == null)
+                return BadRequest("Report bilgisi boş olamaz.");
+
+            if (report.Id == Guid.Empty)
+                report.Id = Guid.NewGuid();
+
             _reportService.CreateReport(report);
-            return CreatedAtAction(nameof(GetReportById), new { id = report.Id }, report);
+
+            return Ok(report);
         }
+
 
         [HttpPut("{id}")]
         public IActionResult UpdateReport(Guid id, Report report)

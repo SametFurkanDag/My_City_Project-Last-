@@ -34,8 +34,10 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Update(Vendor vendor)
         {
-            _context.Vendors.Update(vendor);
-
+            var existingVendor = _context.Vendors.FirstOrDefault(v => v.Id == vendor.Id && !v.IsDeleted);
+            if (existingVendor == null)
+                throw new Exception("Güncellenecek satıcı bulunamadı.");
+            existingVendor.VendorName = vendor.VendorName;
             _context.SaveChanges();
         }
 

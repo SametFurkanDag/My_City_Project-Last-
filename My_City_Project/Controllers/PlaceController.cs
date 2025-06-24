@@ -31,13 +31,20 @@ namespace My_City_Project.Controllers
                 return NotFound("Mekan Bulunamadı");
             return Ok(place);
         }
-
         [HttpPost]
-        public IActionResult CreatePlace(Places place)
+        public IActionResult CreatePlace([FromBody] Places place)
         {
+            if (place == null)
+                return BadRequest("Place bilgisi boş olamaz.");
+
+            if (place.Id == Guid.Empty)
+                place.Id = Guid.NewGuid();
+
             _placeService.CreatePlace(place);
-            return CreatedAtAction(nameof(GetPlaceById), new { id = place.Id }, place);
+
+            return Ok(place);
         }
+
 
         [HttpPut("{id}")]
         public IActionResult UpdatePlace(Guid id, Places place)

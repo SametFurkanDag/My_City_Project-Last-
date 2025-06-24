@@ -33,8 +33,19 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Update(Places place)
         {
-            _context.Places.Update(place);
+            var existingPlace = _context.Places.FirstOrDefault(p => p.Id == place.Id && !p.IsDeleted);
+            if (existingPlace == null)
+            {
+                throw new Exception("Yer bulunamadı.");
+            }
+            existingPlace.PlaceName = place.PlaceName;
+            existingPlace.PlaceLocation = place.PlaceLocation;
+            existingPlace.VendorId = place.VendorId;
+            existingPlace.UpdatedDate = DateTime.UtcNow;
+
+            _context.SaveChanges();
         }
+
 
         public void Delete(Guid id)
         {

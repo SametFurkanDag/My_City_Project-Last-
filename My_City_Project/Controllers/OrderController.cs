@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Model.Entities;
+using My_City_Project.Services.Implementations;
 using My_City_Project.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ namespace My_City_Project.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly ICartItemService _cartItemService;
+
+        public OrderController(ICartItemService cartItemService)
+        {
+            _cartItemService = cartItemService;
+        }
 
         public OrderController(IOrderService orderService)
         {
@@ -35,26 +42,41 @@ namespace My_City_Project.Controllers
 
             return Ok(order);
         }
-
         [HttpPost]
-        public IActionResult CreateOrder([FromBody] Order order)
+        public IActionResult Create([FromBody] Order order)
         {
-            if (order == null || order.OrderItems == null || !order.OrderItems.Any())
+            var cartItems = _cartItemService.GetByUserId(order.UserId);
+            if (cartItems == null || !cartItems.Any())
             {
-                return BadRequest("Sipariş veya sipariş içeriği boş olamaz.");
+                return BadRequest("Sepet boş, sipariş oluşturulamaz.");
+            }
+            order.Id = Guid.NewGuid();
+            order.CreatedDate = DateTime.Now;
+            order.UpdatedDate = DateTime.Now;
+            order.IsDeleted = false;
+            order.TotalAmount = cartItems.Sum(item => item.Quantity * item.Product.ProductPrice);
+            order.OrderItems = new List<OrderItem>();
+
+            foreach (var cartItem in cartItems)
+            {
+                var orderItem = new OrderItem
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    IsDeleted = false,
+                    ProductId = cartItem.ProductId,
+                    Quantity = cartItem.Quantity,
+                    Price = cartItem.Product.ProductPrice,
+                    OrderId = order.Id 
+                };
+
+                order.OrderItems.Add(orderItem);
             }
 
-            try
-            {
-                _orderService.CreateOrder(order, order.OrderItems.ToList());
-
-                return Ok(order);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(order);
         }
+
 
         [HttpPut("{id:guid}")]
         public IActionResult UpdateOrder(Guid id, [FromBody] Order updatedOrder)

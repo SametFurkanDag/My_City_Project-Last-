@@ -40,6 +40,11 @@ namespace My_City_Project.Controllers
         [HttpPost]
         public IActionResult CreateReseller(Reseller reseller)
         {
+            if(reseller == null)
+                return BadRequest("Reseller bilgisi boş olamaz.");
+            if (reseller.Id == Guid.Empty)
+                reseller.Id = Guid.NewGuid();
+
             _resellerService.CreateReseller(reseller);
             return Ok(reseller);
         }

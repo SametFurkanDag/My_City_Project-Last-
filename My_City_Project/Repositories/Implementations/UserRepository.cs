@@ -48,10 +48,18 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Update(User user)
         {
-            user.UpdatedDate = DateTime.UtcNow;
-            _context.Users.Update(user);
+            var existingUser = _context.Users.FirstOrDefault(u => u.Id == user.Id && !u.IsDeleted);
+            if (existingUser == null)
+            {
+                throw new Exception("Kullanıcı bulunamadı.");
+            }
+
+            existingUser.Username = user.Username;
+            existingUser.PasswordHash = user.PasswordHash;
+            existingUser.Role = user.Role;
             _context.SaveChanges();
         }
+
 
         public void Delete(Guid id)
         {

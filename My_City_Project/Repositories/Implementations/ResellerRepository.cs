@@ -33,6 +33,13 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Update(Reseller reseller)
         {
+            var existingReseller = _context.Resellers.FirstOrDefault(p => p.Id == reseller.Id && !p.IsDeleted);
+            if (existingReseller == null)
+            {
+                throw new Exception("Güncellenecek satıcı bulunamadı.");
+            }
+            existingReseller.ResellerName = reseller.ResellerName;
+            existingReseller.ResellerLocation = reseller.ResellerLocation;
             _context.Resellers.Update(reseller);
         }
 
