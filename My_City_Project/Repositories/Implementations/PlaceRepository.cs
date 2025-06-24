@@ -19,22 +19,21 @@ namespace My_City_Project.Repositories.Implementations
         public void Add(Places place)
         {
             _context.Places.Add(place);
-            _context.SaveChanges();
         }
 
         public List<Places> GetAll()
         {
-            return _context.Places.ToList();
+            return _context.Places.Where(p => !p.IsDeleted).ToList();
         }
         public Places GetById(Guid id)
         {
-            return _context.Places.Find(id);
+            return _context.Places.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
+
 
         public void Update(Places place)
         {
             _context.Places.Update(place);
-            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -43,7 +42,6 @@ namespace My_City_Project.Repositories.Implementations
             if (place != null && !place.IsDeleted)
             {
                 place.IsDeleted = true;
-                _context.SaveChanges();
             }
         }
 

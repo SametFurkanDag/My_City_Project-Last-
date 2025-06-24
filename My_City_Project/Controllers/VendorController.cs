@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
+using NPOI.SS.Formula.Functions;
 
 namespace My_City_Project.Controllers
 {
@@ -33,11 +34,26 @@ namespace My_City_Project.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateVendor(Vendor vendor)
+        public IActionResult CreateVendor([FromBody] Vendor vendor)
         {
+            if (vendor == null)
+                return BadRequest("Vendor verisi boş.");
+
+            if (string.IsNullOrWhiteSpace(vendor.VendorName))
+                return BadRequest("Vendor adı boş olamaz.");
+
+            if (vendor.UserId == Guid.Empty)
+                return BadRequest("Geçerli bir UserId girilmelidir.");
+
+            if (vendor.Id == Guid.Empty)
+            {
+                vendor.Id = Guid.NewGuid();
+            }
+
             _vendorService.CreateVendor(vendor);
-            return CreatedAtAction(nameof(GetVendorById), new { id = vendor.Id }, vendor);
+            return Ok(vendor);
         }
+
 
         [HttpPut("{id}")]
         public IActionResult UpdateVendor(Vendor vendor)

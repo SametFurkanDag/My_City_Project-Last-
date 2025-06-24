@@ -19,23 +19,21 @@ namespace My_City_Project.Repositories.Implementations
         public void Add(Reseller reseller)
         {
             _context.Resellers.Add(reseller);
-            _context.SaveChanges();
         }
 
         public List<Reseller> GetAll()
         {
-            return _context.Resellers.ToList();
+            return _context.Resellers.Where(p => !p.IsDeleted).ToList();
         }
 
         public Reseller GetById(Guid id)
         {
-            return _context.Resellers.Find(id);
+            return _context.Resellers.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
         public void Update(Reseller reseller)
         {
             _context.Resellers.Update(reseller);
-            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -44,7 +42,6 @@ namespace My_City_Project.Repositories.Implementations
             if (reseller != null && !reseller.IsDeleted)
             {
                 reseller.IsDeleted = true;
-                _context.SaveChanges();
             }
         }
 

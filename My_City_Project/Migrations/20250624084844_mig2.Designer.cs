@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace My_City_Project.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250623145752_Mig1")]
-    partial class Mig1
+    [Migration("20250624084844_mig2")]
+    partial class mig2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,46 +45,7 @@ namespace My_City_Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.CartItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CartId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CartItem");
                 });
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Order", b =>
@@ -102,10 +63,6 @@ namespace My_City_Project.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("OrderStatus")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
 
@@ -116,8 +73,6 @@ namespace My_City_Project.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -153,8 +108,6 @@ namespace My_City_Project.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("OrderItems");
                 });
 
@@ -181,12 +134,10 @@ namespace My_City_Project.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VendorId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Places");
                 });
@@ -218,8 +169,6 @@ namespace My_City_Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VendorId");
-
                     b.ToTable("Products");
                 });
 
@@ -249,12 +198,7 @@ namespace My_City_Project.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("VendorId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("VendorId");
 
                     b.ToTable("Reports");
                 });
@@ -286,9 +230,6 @@ namespace My_City_Project.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Resellers");
                 });
@@ -340,7 +281,7 @@ namespace My_City_Project.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("VendorName")
@@ -349,158 +290,21 @@ namespace My_City_Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("Vendors");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Cart", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.User", "User")
-                        .WithOne("Cart")
-                        .HasForeignKey("My_City_Project.Model.Entities.Cart", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.CartItem", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("My_City_Project.Model.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Order", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("My_City_Project.Model.Entities.OrderItem", b =>
                 {
-                    b.HasOne("My_City_Project.Model.Entities.Order", "Order")
+                    b.HasOne("My_City_Project.Model.Entities.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("My_City_Project.Model.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Places", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.User", "User")
-                        .WithMany("Places")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Product", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.Vendor", "Vendor")
-                        .WithMany("Products")
-                        .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Vendor");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Report", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.Vendor", "Vendor")
-                        .WithMany("Reports")
-                        .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Vendor");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Reseller", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.User", "User")
-                        .WithOne("ResellerProfile")
-                        .HasForeignKey("My_City_Project.Model.Entities.Reseller", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Vendor", b =>
-                {
-                    b.HasOne("My_City_Project.Model.Entities.User", "User")
-                        .WithOne("VendorProfile")
-                        .HasForeignKey("My_City_Project.Model.Entities.Vendor", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Cart", b =>
-                {
-                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("My_City_Project.Model.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.User", b =>
-                {
-                    b.Navigation("Cart")
-                        .IsRequired();
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Places");
-
-                    b.Navigation("ResellerProfile")
-                        .IsRequired();
-
-                    b.Navigation("VendorProfile")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("My_City_Project.Model.Entities.Vendor", b =>
-                {
-                    b.Navigation("Products");
-
-                    b.Navigation("Reports");
                 });
 #pragma warning restore 612, 618
         }

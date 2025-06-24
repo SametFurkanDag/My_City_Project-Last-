@@ -24,17 +24,18 @@ namespace My_City_Project.Repositories.Implementations
 
         public List<Vendor> GetAll()
         {
-            return _context.Vendors.ToList();
+            return _context.Vendors.Where(v => !v.IsDeleted).ToList();
         }
 
         public Vendor GetById(Guid id)
         {
-            return _context.Vendors.Find(id);
+            return _context.Vendors.FirstOrDefault(v => v.Id == id && !v.IsDeleted);
         }
 
         public void Update(Vendor vendor)
         {
             _context.Vendors.Update(vendor);
+
             _context.SaveChanges();
         }
 
@@ -44,6 +45,7 @@ namespace My_City_Project.Repositories.Implementations
             if (vendor != null && !vendor.IsDeleted)
             {
                 vendor.IsDeleted = true;
+
                 _context.SaveChanges();
             }
         }

@@ -39,8 +39,6 @@ namespace My_City_Project.Controllers
         [HttpPost]
         public IActionResult CreateOrder([FromBody] Order order)
         {
-            
-
             if (order == null || order.OrderItems == null || !order.OrderItems.Any())
             {
                 return BadRequest("Sipariş veya sipariş içeriği boş olamaz.");
@@ -48,10 +46,8 @@ namespace My_City_Project.Controllers
 
             try
             {
-                
                 _orderService.CreateOrder(order, order.OrderItems.ToList());
 
-                
                 return Ok(order);
             }
             catch (Exception ex)

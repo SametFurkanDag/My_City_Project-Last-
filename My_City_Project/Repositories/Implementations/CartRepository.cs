@@ -19,23 +19,21 @@ namespace My_City_Project.Repositories.Implementations
         public void Add(Cart cart)
         {
             _context.Carts.Add(cart);
-            _context.SaveChanges();
         }
 
         public List<Cart> GetAll()
         {
-            return _context.Carts.ToList();
+            return _context.Carts.Where(p => !p.IsDeleted).ToList();
         }
 
         public Cart GetById(Guid id)
         {
-            return _context.Carts.Find(id);
+            return _context.Carts.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
         public void Update(Cart cart)
         {
             _context.Carts.Update(cart);
-            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -44,7 +42,6 @@ namespace My_City_Project.Repositories.Implementations
             if (cart != null && !cart.IsDeleted)
             {
                 cart.IsDeleted = true;
-                _context.SaveChanges();
             }
         }
 

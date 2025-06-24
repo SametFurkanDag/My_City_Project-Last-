@@ -19,11 +19,9 @@ namespace My_City_Project.Controllers
 
     
         [HttpGet]
-        public IActionResult GetAllCarts()
+        public ActionResult <List<Cart>>GetAllCarts()
         {
-           
-            var carts = _cartService.GetAllCarts();
-            return Ok(carts);
+            return Ok(_cartService.GetAllCarts());
         }
 
     
@@ -41,13 +39,13 @@ namespace My_City_Project.Controllers
         [HttpPost]
         public IActionResult CreateCart([FromBody] Cart cart)
         {
-            if (cart == null)
-                return BadRequest();
+            if (cart.Id == Guid.Empty)
+            {
+                cart.Id = Guid.NewGuid();
+            }
+              _cartService.CreateCart(cart);
 
-        
-            _cartService.CreateCart(cart);
-
-            return CreatedAtAction(nameof(GetCartById), new { id = cart.Id }, "Sepet oluşturuldu");
+            return Ok(cart);
         }
 
         [HttpPut("{id:guid}")]

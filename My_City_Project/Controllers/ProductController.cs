@@ -19,11 +19,11 @@ namespace My_City_Project.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllProducts()
+        public ActionResult<List<Product>> GetAllProducts()
         {
-            var products = _productService.GetAllProducts();
-            return Ok(products);
+            return Ok(_productService.GetAllProducts());
         }
+
 
         [HttpGet("{id:guid}")]
         public IActionResult GetProductById(Guid id)
@@ -42,9 +42,8 @@ namespace My_City_Project.Controllers
             {
                 product.Id = Guid.NewGuid();
             }
-
             _productService.CreateProduct(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, "Ürün eklendi");
+            return Ok(product);
         }
 
         [HttpPut("{id:guid}")]

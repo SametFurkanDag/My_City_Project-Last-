@@ -19,23 +19,21 @@ namespace My_City_Project.Repositories.Implementations
         public void Add(Report report)
         {
             _context.Reports.Add(report);
-            _context.SaveChanges();
         }
 
         public List<Report> GetAll()
         {
-            return _context.Reports.ToList();
+            return _context.Reports.Where(p => !p.IsDeleted).ToList();
         }
 
         public Report GetById(Guid id)
         {
-            return _context.Reports.Find(id);
+            return _context.Reports.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
         public void Update(Report report)
         {
             _context.Reports.Update(report);
-            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -44,7 +42,6 @@ namespace My_City_Project.Repositories.Implementations
             if (report != null && !report.IsDeleted)
             {
                 report.IsDeleted = true;
-                _context.SaveChanges();
             }
         }
 

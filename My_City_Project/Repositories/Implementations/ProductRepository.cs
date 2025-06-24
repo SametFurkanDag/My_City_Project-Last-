@@ -21,8 +21,6 @@ namespace My_City_Project.Repositories.Implementations
             _context.Products.Add(product);
             _context.SaveChanges();
         }
-
-        
         public List<Product> GetAll()
         {
             return _context.Products.Where(p => !p.IsDeleted).ToList();
@@ -34,9 +32,17 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Update(Product product)
         {
-            _context.Products.Update(product);
+            var existingProduct = _context.Products.FirstOrDefault(p => p.Id == product.Id && !p.IsDeleted);
+            if (existingProduct == null)
+                throw new Exception("Güncellenecek ürün bulunamadı.");
+
+            existingProduct.ProductName = product.ProductName;
+            existingProduct.ProductPrice = product.ProductPrice;
+            existingProduct.VendorId = product.VendorId;
+            existingProduct.UpdatedDate = DateTime.UtcNow;
             _context.SaveChanges();
         }
+
 
         public void Delete(Guid id)
         {

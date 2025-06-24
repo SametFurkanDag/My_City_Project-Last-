@@ -3,12 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace My_City_Project.Model.Entities
 {
-    public class Cart:BaseModel
+    public class Cart : BaseModel
     {
         public Guid UserId { get; set; }
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-
-        public virtual ICollection<CartItem> CartItems { get; set; }
     }
 }

@@ -49,7 +49,6 @@ namespace My_City_Project.Services.Implementations
             try
             {
                 _productRepository.Add(product);
-                _context.SaveChanges();
 
                 Log.Information("Yeni ürün eklendi: {@Product}", product);
             }
@@ -64,10 +63,20 @@ namespace My_City_Project.Services.Implementations
         {
             try
             {
-                _productRepository.Update(product);
-                _context.SaveChanges();
+                var existingProduct = _productRepository.GetById(product.Id);
+                if (existingProduct == null)
+                {
+                    Log.Warning("Güncellenmek istenen ürün bulunamadı. ID: {ProductId}", product.Id);
+                    throw new Exception("Ürün bulunamadı.");
+                }
+                existingProduct.ProductName = product.ProductName;
+                existingProduct.ProductPrice = product.ProductPrice;
+                existingProduct.VendorId = product.VendorId;
+                existingProduct.UpdatedDate = DateTime.UtcNow;
 
-                Log.Information("Ürün güncellendi: {@Product}", product);
+                _productRepository.Update(existingProduct);
+
+                Log.Information("Ürün başarıyla güncellendi: {@Product}", existingProduct);
             }
             catch (Exception ex)
             {
@@ -76,12 +85,12 @@ namespace My_City_Project.Services.Implementations
             }
         }
 
+
         public void DeleteProduct(Guid id)
         {
             try
             {
                 _productRepository.Delete(id);
-                _context.SaveChanges();
 
                 Log.Information("ID {ProductId} ile ürün silindi.", id);
             }

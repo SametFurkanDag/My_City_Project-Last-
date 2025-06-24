@@ -49,7 +49,6 @@ namespace My_City_Project.Services.Implementations
             try
             {
                 _vendorRepository.Add(vendor);
-                _context.SaveChanges();
 
                 Log.Information("Yeni satıcı eklendi: {@Vendor}", vendor);
             }
@@ -65,7 +64,6 @@ namespace My_City_Project.Services.Implementations
             try
             {
                 _vendorRepository.Update(vendor);
-                _context.SaveChanges();
 
                 Log.Information("Satıcı güncellendi: {@Vendor}", vendor);
             }
@@ -81,7 +79,6 @@ namespace My_City_Project.Services.Implementations
             try
             {
                 _vendorRepository.Delete(id);
-                _context.SaveChanges();
 
                 Log.Information("ID {VendorId} ile satıcı silindi.", id);
             }

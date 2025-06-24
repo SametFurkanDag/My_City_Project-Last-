@@ -19,23 +19,21 @@ namespace My_City_Project.Repositories.Implementations
         public void Add(Order order)
         {
             _context.Orders.Add(order);
-            _context.SaveChanges();
         }
 
         public List<Order> GetAll()
         {
-            return _context.Orders.ToList();
+            return _context.Orders.Where(p => !p.IsDeleted).ToList();
         }
 
         public Order GetById(Guid id)
         {
-            return _context.Orders.Find(id);
+            return _context.Orders.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
         public void Update(Order order)
         {
             _context.Orders.Update(order);
-            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -44,7 +42,6 @@ namespace My_City_Project.Repositories.Implementations
             if (order != null && !order.IsDeleted)
             {
                 order.IsDeleted = true;
-                _context.SaveChanges();
             }
         }
 

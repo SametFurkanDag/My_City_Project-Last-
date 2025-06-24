@@ -9,8 +9,5 @@ namespace My_City_Project.Model.Entities
         public DateTime ReportDate { get; set; } = DateTime.UtcNow;
 
       
-        public Guid VendorId { get; set; }
-        [ForeignKey("VendorId")]
-        public virtual Vendor Vendor { get; set; }
     }
 }

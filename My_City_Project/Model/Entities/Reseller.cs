@@ -7,9 +7,6 @@ namespace My_City_Project.Model.Entities
         public string ResellerName { get; set; }
         public string ResellerLocation { get; set; }
 
-        
         public Guid UserId { get; set; }
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
     }
 }

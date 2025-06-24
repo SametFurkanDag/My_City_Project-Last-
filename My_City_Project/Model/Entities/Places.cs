@@ -6,10 +6,6 @@ namespace My_City_Project.Model.Entities
     {
         public string PlaceName { get; set; }
         public string PlaceLocation { get; set; }
-
-        
-        public Guid UserId { get; set; }
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public Guid VendorId { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace My_City_Project.Controllers
         {
             var place = _placeService.GetPlaceById(id);
             if (place == null)
-                return NotFound("Place not found");
+                return NotFound("Mekan Bulunamadı");
             return Ok(place);
         }
 
@@ -43,7 +43,7 @@ namespace My_City_Project.Controllers
         public IActionResult UpdatePlace(Guid id, Places place)
         {
             if (id != place.Id)
-                return BadRequest("ID mismatch");
+                return BadRequest("ID eşleşmedi");
 
             _placeService.UpdatePlace(place);
             return Ok(place);
@@ -53,7 +53,7 @@ namespace My_City_Project.Controllers
         public IActionResult DeletePlace(Guid id)
         {
             _placeService.DeletePlace(id);
-            return Ok("Place deleted successfully");
+            return Ok("Mekan Silindi");
         }
     }
 }
