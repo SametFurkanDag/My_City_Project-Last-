@@ -10,8 +10,6 @@ namespace My_City_Project.Model.Entities
 
         public Guid OrderId { get; set; }
         public Guid ProductId { get; set; }
-    
-      
-
+        public Product Product { get;  set; }
     }
 }

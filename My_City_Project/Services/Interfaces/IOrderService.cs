@@ -6,7 +6,7 @@ public interface IOrderService
     Order GetOrderById(Guid id);
     List<Order> GetAllOrders();
 
-    void CreateOrder(Order order, List<OrderItem> items);
+    void CreateOrder(Order order);
     void UpdateOrder(Order order); 
     void DeleteOrder(Guid id);
 }

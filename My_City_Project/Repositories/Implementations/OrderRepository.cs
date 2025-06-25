@@ -18,13 +18,37 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Add(Order order)
         {
+            if (order.Id == Guid.Empty)
+                order.Id = Guid.NewGuid();
+            var exists = _context.Orders.Any(p => p.Id == order.Id);
+            if (exists)
+            {
+                throw new Exception("Bu Id ile sipariş zaten mevcut.");
+            }
             _context.Orders.Add(order);
+            _context.SaveChanges();
         }
 
         public List<Order> GetAll()
         {
-            return _context.Orders.Where(p => !p.IsDeleted).ToList();
+            var orders = _context.Orders.Where(p => !p.IsDeleted).ToList();
+
+            foreach (var order in orders)
+            {
+                order.OrderItems = _context.OrderItems
+                    .Where(oi => oi.OrderId == order.Id)
+                    .ToList();
+
+                foreach (var item in order.OrderItems)
+                {
+                    item.Product = _context.Products
+                        .FirstOrDefault(p => p.Id == item.ProductId);
+                }
+            }
+
+            return orders;
         }
+
 
         public Order GetById(Guid id)
         {

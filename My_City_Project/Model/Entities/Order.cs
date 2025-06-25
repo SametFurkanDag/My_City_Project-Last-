@@ -8,8 +8,10 @@ namespace My_City_Project.Model.Entities
         public Guid UserId { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public virtual Cart? Cart { get; set; }
+        public Guid? CartId { get; set; }
 
     }
 }

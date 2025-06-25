@@ -41,8 +41,6 @@ namespace My_City_Project.Controllers
 
             return Ok(result);
         }
-
-
         [HttpGet("{id:guid}")]
         public IActionResult GetCartItemById(Guid userId)
         {
