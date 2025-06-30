@@ -1,4 +1,6 @@
-﻿namespace My_City_Project.Dtos.CartItemDtos
+﻿using My_City_Project.Model.Entities;
+
+namespace My_City_Project.Dtos.CartItemDtos
 {
     public class CreateCartItemDto
     {

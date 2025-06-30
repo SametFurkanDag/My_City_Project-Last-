@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.CartItemDtos;
+using My_City_Project.Dtos.ReportDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
 using System;
@@ -37,17 +38,20 @@ namespace My_City_Project.Controllers
         public IActionResult CreateCartItem([FromBody] CreateCartItemDto createCartItemDto)
         {
             var cartItem = _mapper.Map<CartItem>(createCartItemDto);
-            cartItem.Id = Guid.NewGuid();
+            if (cartItem == null)
+            {
+                cartItem.Id = Guid.NewGuid();
+            }
+
             _cartItemService.Add(cartItem);
-            return Ok();
+            var report = _mapper.Map<CartItem>(createCartItemDto);
+            return Ok(report);
         }
         
         [HttpPut("{id}")]
         public IActionResult UpdateCartItem(Guid id, [FromBody] UpdateCartItemDto updateCartItemDto)
         {
             var existingCartItems = _cartItemService.GetByCartId(id);
-            if (existingCartItems == null || existingCartItems.Count == 0)
-                return NotFound();
 
             var existingCartItem = existingCartItems[0];
 

@@ -19,17 +19,6 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Add(CartItem cartItem)
         {
-            if (cartItem.Id == Guid.Empty)
-                cartItem.Id = Guid.NewGuid();
-
-            var exists = _context.CartItems.Any(ci => ci.Id == cartItem.Id);
-            if (exists)
-                throw new Exception("Bu Id ile zaten bir CartItem mevcut.");
-
-            cartItem.CreatedDate = DateTime.UtcNow;
-            cartItem.UpdatedDate = DateTime.UtcNow;
-            cartItem.IsDeleted = false;
-
             _context.CartItems.Add(cartItem);
             _context.SaveChanges();
         }

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using My_City_Project.Dtos.ProductDtos;
+using My_City_Project.Dtos.ReportDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Implementations;
 using My_City_Project.Services.Interfaces;
@@ -10,20 +13,23 @@ namespace My_City_Project.Controllers
     [Route("api/v{version:ApiVersion}/[controller]")]
     [ApiController]
     
-    public class ReportController : ControllerBase
+     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
+        private readonly IMapper _mapper;
 
-        public ReportController(IReportService reportService)
+        public ReportController(IReportService reportService, IMapper mapper)
         {
             _reportService = reportService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetAllReports()
         {
             var reports = _reportService.GetAllReports();
-            return Ok(reports);
+            var result = _mapper.Map<List<ResultReportDto>>(reports);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -32,18 +38,15 @@ namespace My_City_Project.Controllers
             var report = _reportService.GetReportById(id);
             if (report == null)
                 return NotFound("Report not found");
-            return Ok(report);
+            var result = _mapper.Map<GetByIdReportDto>(CreateReport);
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult CreateReport([FromBody] Report report)
+        public IActionResult CreateReport([FromBody] CreateReportDto createReportDto)
         {
-            if (report == null)
-                return BadRequest("Report bilgisi boş olamaz.");
 
-            if (report.Id == Guid.Empty)
-                report.Id = Guid.NewGuid();
-
+            var report = _mapper.Map<Report>(createReportDto);
             _reportService.CreateReport(report);
 
             return Ok(report);
@@ -51,11 +54,11 @@ namespace My_City_Project.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateReport(Guid id, Report report)
+        public IActionResult UpdateReport(Guid id, [FromBody] UpdateReportDto updateReportDto)
         {
-            if (id != report.Id)
-                return BadRequest("ID mismatch");
+            var report = _reportService.GetReportById(id);
 
+            _mapper.Map(updateReportDto, report);
             _reportService.UpdateReport(report);
             return Ok(report);
         }
@@ -63,8 +66,9 @@ namespace My_City_Project.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteReport(Guid id)
         {
+            var report = _reportService.GetReportById(id);
             _reportService.DeleteReport(id);
-            return Ok("Report deleted successfully");
+            return Ok("Report Silme Başarılı");
         }
     }
 }

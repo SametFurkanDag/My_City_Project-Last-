@@ -50,7 +50,7 @@ namespace My_City_Project.Controllers
             _cartService.CreateCart(cart);
 
             var cartDto=_mapper.Map<CreateCartDto>(cart);
-            return Ok();
+            return Ok(cartDto);
         }
 
         [HttpDelete("{id}")]

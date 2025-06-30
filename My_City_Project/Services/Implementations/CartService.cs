@@ -48,7 +48,6 @@ namespace My_City_Project.Services.Implementations
             try
             {
                 _cartRepository.Add(cart);
-                _context.SaveChanges();
                 Log.Information("Yeni sepet oluşturuluyor. Kullanıcı ID: {UserId}", cart.UserId);
             }
             catch (Exception ex)
