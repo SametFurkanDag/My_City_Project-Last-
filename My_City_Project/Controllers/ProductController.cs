@@ -1,76 +1,73 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using My_City_Project.Dtos;
+using My_City_Project.Dtos.ProductDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:ApiVersion}/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<List<Product>> GetAllProducts()
+        public IActionResult GetAllProducts()
         {
-            return Ok(_productService.GetAllProducts());
+            var products = _productService.GetAllProducts();
+            var result = _mapper.Map<List<ResultProductDto>>(products);
+            return Ok(result);
         }
-
-
-        [HttpGet("{id:guid}")]
-        public IActionResult GetProductById(Guid id)
+        [HttpGet("{id}")]
+        public IActionResult GetProduct(Guid id)
         {
             var product = _productService.GetProductById(id);
             if (product == null)
-                return NotFound("Ürün bulunamadı");
-
-            return Ok(product);
-        }
-
-        [HttpPost]
-        public IActionResult CreateProduct([FromBody] Product product)
-        {
-            if (product.Id == Guid.Empty)
             {
-                product.Id = Guid.NewGuid();
+                return NotFound();
             }
-            _productService.CreateProduct(product);
-            return Ok(product);
+            var result = _mapper.Map<GetByIdProductDto>(product);
+            return Ok(result);
         }
-
-        [HttpPut("{id:guid}")]
-        public IActionResult UpdateProduct(Guid id, [FromBody] Product product)
+        [HttpPost]
+        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
         {
-            var existingProduct = _productService.GetProductById(id);
-            if (existingProduct == null)
-                return NotFound("Ürün bulunamadı");
-
-            if (product.Id != id)
-                return BadRequest("Ürün ID'si rota ID'si ile eşleşmiyor.");
-
-            _productService.UpdateProduct(product);
-            return Ok("Ürün güncellendi");
+            var product = _mapper.Map<Product>(createProductDto);
+            _productService.CreateProduct(product);
+            return Ok();
         }
-
-        [HttpDelete("{id:guid}")]
+        [HttpPut("{id}")]
+        public IActionResult UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
+        {
+            var product = _productService.GetProductById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(updateProductDto, product);
+            _productService.UpdateProduct(product);
+            return Ok();
+        }
+        [HttpDelete("{id}")]
         public IActionResult DeleteProduct(Guid id)
         {
-          
-            var existingProduct = _productService.GetProductById(id);
-
-            if (existingProduct == null)
-                return NotFound("Ürün bulunamadı");
-
+            var product = _productService.GetProductById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
             _productService.DeleteProduct(id);
-            return Ok("Ürün silindi");
+            return Ok();
         }
     }
 }

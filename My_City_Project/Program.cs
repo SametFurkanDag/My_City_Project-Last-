@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using My_City_Project.Data;
 using My_City_Project.Extensions;
 using My_City_Project.Helpers;
+using My_City_Project.Mappings;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 
@@ -32,6 +33,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPasswordHelper, BcryptPasswordHelper>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
+
 
 var app = builder.Build();
 

@@ -1,79 +1,63 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using My_City_Project.Dtos.CartDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:ApiVersion}/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
+        private readonly IMapper _mapper;
 
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, IMapper mapper)
         {
             _cartService = cartService;
+            _mapper = mapper;
         }
 
-    
         [HttpGet]
-        public ActionResult <List<Cart>>GetAllCarts()
+        public IActionResult GetAllCarts()
         {
-            return Ok(_cartService.GetAllCarts());
+            var carts = _cartService.GetAllCarts();
+            var result = _mapper.Map<List<ResultCartDto>>(carts);
+            return Ok(result);
         }
 
-    
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id}")]
         public IActionResult GetCartById(Guid id)
         {
-            
             var cart = _cartService.GetCartById(id);
             if (cart == null)
-                return NotFound("Sepet bulunamadı");
+                return NotFound();
 
-            return Ok(cart);
+            var result = _mapper.Map<GetByIdCartDto>(cart);
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult CreateCart([FromBody] Cart cart)
+        public IActionResult CreateCart([FromBody] CreateCartDto createCartDto)
         {
-            if (cart.Id == Guid.Empty)
-            {
-                cart.Id = Guid.NewGuid();
-            }
-              _cartService.CreateCart(cart);
-
-            return Ok(cart);
+            var cart = _mapper.Map<Cart>(createCartDto);
+            _cartService.CreateCart(cart);
+            return Ok();
         }
 
-        [HttpPut("{id:guid}")]
-        public IActionResult UpdateCart(Guid id, [FromBody] Cart cart)
-        {
-            if (cart == null || id != cart.Id)
-                return BadRequest("Geçersiz istek: ID uyuşmazlığı.");
-
-            var existingCart = _cartService.GetCartById(id);
-            if (existingCart == null)
-                return NotFound("Güncellenecek sepet bulunamadı");
-
-       
-            _cartService.UpdateCart(cart);
-            return NoContent();
-        }
-
-       
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteCart(Guid id)
         {
-            var existingCart = _cartService.GetCartById(id);
-            if (existingCart == null)
-                return NotFound("Silinecek sepet bulunamadı");
+            var cart = _cartService.GetCartById(id);
+            if (cart == null)
+                return NotFound();
 
-     
             _cartService.DeleteCart(id);
-            return NoContent();
+            return Ok();
         }
     }
 }

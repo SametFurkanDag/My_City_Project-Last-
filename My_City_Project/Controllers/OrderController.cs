@@ -1,30 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using My_City_Project.Dtos.OrderDtos;
 using My_City_Project.Model.Entities;
-using My_City_Project.Services.Implementations;
 using My_City_Project.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace My_City_Project.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:ApiVersion}/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IMapper _mapper;
 
-     
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, IMapper mapper)
         {
             _orderService = orderService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<List<Order>> GetAllOrders()
+        public IActionResult GetAllOrders()
         {
-            return Ok(_orderService.GetAllOrders());
+            var orders = _orderService.GetAllOrders();
+            var result = _mapper.Map<List<ResultOrderDto>>(orders);
+            return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
@@ -32,52 +35,49 @@ namespace My_City_Project.Controllers
         {
             var order = _orderService.GetOrderById(id);
             if (order == null)
-                return NotFound("Sipariş bulunamadı."); 
+                return NotFound("Sipariş bulunamadı.");
 
-            return Ok(order);
+            var result = _mapper.Map<GetByIdOrderDto>(order);
+            return Ok(result);
         }
+
         [HttpPost]
-        public IActionResult CreateOrder([FromBody] Order order)
+        public IActionResult CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
-          if(order.Id== Guid.Empty)
+            var order = _mapper.Map<Order>(createOrderDto);
+            if (order.Id == Guid.Empty)
             {
-                order.Id = Guid.NewGuid(); 
+                order.Id = Guid.NewGuid();
             }
-          _orderService.CreateOrder(order);
+            _orderService.CreateOrder(order);
             return Ok(order);
         }
-
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateOrder(Guid id, [FromBody] Order updatedOrder)
+        public IActionResult UpdateOrder(Guid id, [FromBody] UpdateOrderDto updateOrderDto)
         {
-            if (id != updatedOrder.Id)
+            if (id != updateOrderDto.UserId)
             {
                 return BadRequest("ID uyuşmazlığı.");
             }
 
-            try
-            {
-                _orderService.UpdateOrder(updatedOrder);
-                return Ok(updatedOrder); 
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var order = _orderService.GetOrderById(id);
+            if (order == null)
+                return NotFound("Sipariş bulunamadı.");
+
+            _mapper.Map(updateOrderDto, order);
+
+                _orderService.UpdateOrder(order);
+                return Ok(order);
+           
         }
+
         [HttpDelete("{id:guid}")]
         public IActionResult DeleteOrder(Guid id)
         {
-            try
-            {
                 _orderService.DeleteOrder(id);
-                return Ok("Sipariş silindi"); 
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
+                return Ok("Sipariş silindi");
             }
         }
     }
-}
+

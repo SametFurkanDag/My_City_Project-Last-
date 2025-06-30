@@ -1,72 +1,75 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using My_City_Project.Dtos.PlacesDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
-using NPOI.SS.Formula.Functions;
+using System;
+using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:ApiVersion}/[controller]")]
     [ApiController]
-    public class VendorController : ControllerBase
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
+    public class PlacesController : ControllerBase
     {
-        private readonly IVendorService _vendorService;
+        private readonly IPlaceService _placeService;
+        private readonly IMapper _mapper;
 
-        public VendorController(IVendorService vendorService)
+        public PlacesController(IPlaceService placeService, IMapper mapper)
         {
-            _vendorService = vendorService;
+            _placeService = placeService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult GetAllVendors()
+        public IActionResult GetAllPlaces()
         {
-            var vendors = _vendorService.GetAllVendors();
-            return Ok(vendors);
+            var places = _placeService.GetAllPlaces();
+            var result = _mapper.Map<List<ResultPlaceDto>>(places);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetVendorById(Guid id)
+        public IActionResult GetPlaceById(Guid id)
         {
-            var vendor = _vendorService.GetVendorById(id);
-            if (vendor == null)
-                return NotFound("Vendor not found");
-            return Ok(vendor);
+            var place = _placeService.GetPlaceById(id);
+            if (place == null)
+                return NotFound();
+
+            var result = _mapper.Map<GetByIdPlaceDto>(place);
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult CreateVendor([FromBody] Vendor vendor)
+        public IActionResult CreatePlace([FromBody] CreatePlaceDto createPlaceDto)
         {
-            if (vendor == null)
-                return BadRequest("Vendor verisi boş.");
-
-            if (string.IsNullOrWhiteSpace(vendor.VendorName))
-                return BadRequest("Vendor adı boş olamaz.");
-
-            if (vendor.UserId == Guid.Empty)
-                return BadRequest("Geçerli bir UserId girilmelidir.");
-
-            if (vendor.Id == Guid.Empty)
-            {
-                vendor.Id = Guid.NewGuid();
-            }
-
-            _vendorService.CreateVendor(vendor);
-            return Ok(vendor);
+            var place = _mapper.Map<Places>(createPlaceDto);
+            _placeService.CreatePlace(place);
+            return Ok();
         }
 
-
         [HttpPut("{id}")]
-        public IActionResult UpdateVendor(Vendor vendor)
+        public IActionResult UpdatePlace(Guid id, [FromBody] UpdatePlaceDto updatePlaceDto)
         {
-            _vendorService.UpdateVendor(vendor);
-            return Ok(vendor);
+            var place = _placeService.GetPlaceById(id);
+            if (place == null)
+                return NotFound();
+
+            _mapper.Map(updatePlaceDto, place);
+            _placeService.UpdatePlace(place);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteVendor(Guid id)
+        public IActionResult DeletePlace(Guid id)
         {
-            _vendorService.DeleteVendor(id);
-            return Ok("Vendor deleted successfully");
+            var place = _placeService.GetPlaceById(id);
+            if (place == null)
+                return NotFound();
+
+            _placeService.DeletePlace(id);
+            return Ok();
         }
     }
 }

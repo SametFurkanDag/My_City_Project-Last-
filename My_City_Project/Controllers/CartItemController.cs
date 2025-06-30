@@ -1,86 +1,81 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using My_City_Project.Dtos.CartItemDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
-
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class CartItemController : ControllerBase
     {
         private readonly ICartItemService _cartItemService;
+        private readonly IMapper _mapper;
 
-        public CartItemController(ICartItemService cartItemService)
+        public CartItemController(ICartItemService cartItemService, IMapper mapper)
         {
             _cartItemService = cartItemService;
+            _mapper = mapper;
         }
+
         [HttpGet]
-        public IActionResult GetAllCartItems([FromQuery] Guid userId)
+        public IActionResult GetAllCartItems()
         {
-            var cartItems = _cartItemService.GetByUserId(userId);
+            return Ok("Tüm CartItemları listeleyen metod servis tarafında yok. Gerekirse ekle.");
+        }
 
-            var result = cartItems.Select(ci => new
-            {
-                ci.Id,
-                ci.CreatedDate,
-                ci.UpdatedDate,
-                ci.IsDeleted,
-                ci.CartId,
-                ci.ProductId,
-                ci.Quantity,
-                Product = new
-                {
-                    ci.Product.ProductName
-                }
-            }).ToList();
+        [HttpGet("{id}")]
+        public IActionResult GetCartItemById(Guid id)
+        {
+            var cartItem = _cartItemService.GetById(id);
+            if (cartItem == null)
+                return NotFound();
 
+            var result = _mapper.Map<GetByIdCartItemDto>(cartItem);
             return Ok(result);
         }
-        [HttpGet("{id:guid}")]
-        public IActionResult GetCartItemById(Guid userId)
+
+        [HttpGet("by-user/{userId}")]
+        public IActionResult GetCartItemsByUserId(Guid userId)
         {
-            var cartItem = _cartItemService.GetById(userId);
-            if (cartItem == null)
-                return NotFound("Sepet öğesi bulunamadı");
-            return Ok(cartItem);
+            var cartItems = _cartItemService.GetByUserId(userId);
+            var result = _mapper.Map<List<ResultCartItemDto>>(cartItems);
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult CreateCartItem([FromBody] CartItem cartItem)
+        public IActionResult CreateCartItem([FromBody] CreateCartItemDto createCartItemDto)
         {
-            if (cartItem == null)
-                return BadRequest("Sepet öğesi verisi boş.");
-
+            var cartItem = _mapper.Map<CartItem>(createCartItemDto);
             _cartItemService.Add(cartItem);
-
-            return CreatedAtAction(nameof(GetCartItemById), new { id = cartItem.Id }, cartItem);
+            return Ok();
         }
 
-        [HttpPut("{id:guid}")]
-        public IActionResult UpdateCartItem(Guid id, [FromBody] CartItem cartItem)
+        [HttpPut("{id}")]
+        public IActionResult UpdateCartItem(Guid id, [FromBody] UpdateCartItemDto updateCartItemDto)
         {
             var existingCartItem = _cartItemService.GetById(id);
             if (existingCartItem == null)
-                return NotFound("Sepet öğesi bulunamadı");
-            if (cartItem.Id != id)
-                return BadRequest("Sepet öğesi ID'si rota ID'si ile eşleşmiyor.");
-            _cartItemService.Update(cartItem);
-            return Ok("Sepet öğesi güncellendi");
+                return NotFound();
+
+            _mapper.Map(updateCartItemDto, existingCartItem);
+            _cartItemService.Update(existingCartItem);
+            return Ok();
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteCartItem(Guid id)
         {
             var existingCartItem = _cartItemService.GetById(id);
             if (existingCartItem == null)
-                return NotFound("Sepet öğesi bulunamadı");
+                return NotFound();
+
             _cartItemService.Delete(id);
-            return Ok("Sepet ögesi Silindi");
+            return Ok();
         }
     }
-    }
+}
