@@ -1,14 +1,14 @@
-﻿using System;
+﻿using My_City_Project.Model.Entities;
+using System;
 using System.Collections.Generic;
-using My_City_Project.Model.Entities;
+
 namespace My_City_Project.Repositories.Interfaces
 {
     public interface ICartItemRepository
     {
         void Add(CartItem cartItem);
-        CartItem GetById(Guid id); 
-        List<CartItem> GetByUserId(Guid userId);
-
+        CartItem GetById(Guid id);
+        List<CartItem> GetAll(Guid cartId);
         void Update(CartItem cartItem);
         void Delete(Guid id);
     }

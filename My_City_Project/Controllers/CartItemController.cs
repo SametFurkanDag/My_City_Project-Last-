@@ -22,60 +22,49 @@ namespace My_City_Project.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IActionResult GetAllCartItems()
+        [HttpGet("by-cart/{cartId}")]
+        public IActionResult GetCartItemsByCartId(Guid cartId)
         {
-            return Ok("Tüm CartItemları listeleyen metod servis tarafında yok. Gerekirse ekle.");
-        }
+            var cartItems = _cartItemService.GetByCartId(cartId);
+           
 
-        [HttpGet("{id}")]
-        public IActionResult GetCartItemById(Guid id)
-        {
-            var cartItem = _cartItemService.GetById(id);
-            if (cartItem == null)
-                return NotFound();
-
-            var result = _mapper.Map<GetByIdCartItemDto>(cartItem);
+            var result = _mapper.Map<List<GetByIdCartItemDto>>(cartItems);
             return Ok(result);
         }
 
-        [HttpGet("by-user/{userId}")]
-        public IActionResult GetCartItemsByUserId(Guid userId)
-        {
-            var cartItems = _cartItemService.GetByUserId(userId);
-            var result = _mapper.Map<List<ResultCartItemDto>>(cartItems);
-            return Ok(result);
-        }
 
         [HttpPost]
         public IActionResult CreateCartItem([FromBody] CreateCartItemDto createCartItemDto)
         {
             var cartItem = _mapper.Map<CartItem>(createCartItemDto);
+            cartItem.Id = Guid.NewGuid();
             _cartItemService.Add(cartItem);
             return Ok();
         }
-
+        
         [HttpPut("{id}")]
         public IActionResult UpdateCartItem(Guid id, [FromBody] UpdateCartItemDto updateCartItemDto)
         {
-            var existingCartItem = _cartItemService.GetById(id);
-            if (existingCartItem == null)
+            var existingCartItems = _cartItemService.GetByCartId(id);
+            if (existingCartItems == null || existingCartItems.Count == 0)
                 return NotFound();
+
+            var existingCartItem = existingCartItems[0];
 
             _mapper.Map(updateCartItemDto, existingCartItem);
             _cartItemService.Update(existingCartItem);
             return Ok();
         }
-
         [HttpDelete("{id}")]
         public IActionResult DeleteCartItem(Guid id)
         {
-            var existingCartItem = _cartItemService.GetById(id);
+            var existingCartItem = _cartItemService.GetByCartId(id);  
             if (existingCartItem == null)
                 return NotFound();
 
             _cartItemService.Delete(id);
             return Ok();
         }
+
     }
 }

@@ -23,7 +23,7 @@ namespace My_City_Project.Mappings
             CreateMap<CreateCartItemDto, CartItem>().ReverseMap();
             CreateMap<UpdateCartItemDto, CartItem>().ReverseMap();
             CreateMap<ResultCartItemDto, CartItem>().ReverseMap();
-            CreateMap<GetByIdCartItemDto, CartItem>().ReverseMap();
+            CreateMap<CartItem, GetByIdCartItemDto>();
 
             CreateMap<CreatePlaceDto, Places>().ReverseMap();
             CreateMap<UpdatePlaceDto, Places>().ReverseMap();

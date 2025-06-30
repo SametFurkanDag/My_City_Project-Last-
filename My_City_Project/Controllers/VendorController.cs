@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using My_City_Project.Dtos.PlacesDtos;
+using My_City_Project.Dtos.VendorDto;
+using My_City_Project.Dtos.VendorDtos;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
 using System;
@@ -11,65 +12,64 @@ namespace My_City_Project.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
-    public class PlacesController : ControllerBase
+    public class VendorController : ControllerBase
     {
-        private readonly IPlaceService _placeService;
+        private readonly IVendorService _vendorService;
         private readonly IMapper _mapper;
 
-        public PlacesController(IPlaceService placeService, IMapper mapper)
+        public VendorController(IVendorService vendorService, IMapper mapper)
         {
-            _placeService = placeService;
+            _vendorService = vendorService;
             _mapper = mapper;
         }
-
         [HttpGet]
-        public IActionResult GetAllPlaces()
+        public IActionResult GetAllVendors()
         {
-            var places = _placeService.GetAllPlaces();
-            var result = _mapper.Map<List<ResultPlaceDto>>(places);
-            return Ok(result);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetPlaceById(Guid id)
-        {
-            var place = _placeService.GetPlaceById(id);
-            if (place == null)
-                return NotFound();
-
-            var result = _mapper.Map<GetByIdPlaceDto>(place);
+            var vendors = _vendorService.GetAllVendors();
+            var result = _mapper.Map<List<ResultVendorDto>>(vendors);
             return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult CreatePlace([FromBody] CreatePlaceDto createPlaceDto)
+        public IActionResult CreateVendor([FromBody] CreateVendorDto createVendorDto)
         {
-            var place = _mapper.Map<Places>(createPlaceDto);
-            _placeService.CreatePlace(place);
-            return Ok();
+            var vendor = _mapper.Map<Vendor>(createVendorDto);
+            vendor.Id = Guid.NewGuid();
+
+            _vendorService.CreateVendor(vendor);
+
+            var vendorDto = _mapper.Map<ResultVendorDto>(vendor);
+            return Ok(vendorDto);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetVendorById(Guid id)
+        {
+            var vendor = _vendorService.GetVendorById(id);
+            if (vendor == null)
+                return NotFound();
+
+            var result = _mapper.Map<GetByIdVendorDto>(vendor);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdatePlace(Guid id, [FromBody] UpdatePlaceDto updatePlaceDto)
+        public IActionResult UpdateVendor(Guid id, [FromBody] UpdateVendorDto vendorUpdateDto)
         {
-            var place = _placeService.GetPlaceById(id);
-            if (place == null)
-                return NotFound();
 
-            _mapper.Map(updatePlaceDto, place);
-            _placeService.UpdatePlace(place);
-            return Ok();
+            var vendor = _mapper.Map<Vendor>(vendorUpdateDto);
+
+            _vendorService.UpdateVendor(vendor);
+
+            var vendorDto = _mapper.Map<ResultVendorDto>(vendor);
+            return Ok(vendorDto);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeletePlace(Guid id)
+        public IActionResult DeleteVendor(Guid id)
         {
-            var place = _placeService.GetPlaceById(id);
-            if (place == null)
-                return NotFound();
-
-            _placeService.DeletePlace(id);
-            return Ok();
+            _vendorService.DeleteVendor(id);
+            return Ok("Satıcı Silindi");
         }
     }
 }

@@ -45,7 +45,11 @@ namespace My_City_Project.Controllers
         public IActionResult CreateCart([FromBody] CreateCartDto createCartDto)
         {
             var cart = _mapper.Map<Cart>(createCartDto);
+            cart.Id = Guid.NewGuid();
+
             _cartService.CreateCart(cart);
+
+            var cartDto=_mapper.Map<CreateCartDto>(cart);
             return Ok();
         }
 

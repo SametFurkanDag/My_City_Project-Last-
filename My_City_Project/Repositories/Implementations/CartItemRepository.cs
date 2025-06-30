@@ -33,21 +33,15 @@ namespace My_City_Project.Repositories.Implementations
             _context.CartItems.Add(cartItem);
             _context.SaveChanges();
         }
-
         public CartItem GetById(Guid id)
         {
-            return _context.CartItems.FirstOrDefault(ci => ci.Id == id && !ci.IsDeleted);
+            return _context.CartItems.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
-        public List<CartItem> GetByUserId(Guid userId)
+        public List<CartItem> GetAll(Guid cartId)
         {
-            var cart = _context.Carts.FirstOrDefault(c => c.UserId == userId && !c.IsDeleted);
-            if (cart == null)
-                return new List<CartItem>();
-
             return _context.CartItems
-                .Include(ci => ci.Product)
-                .Where(ci => ci.CartId == cart.Id && !ci.IsDeleted)
+                .Where(p => p.CartId == cartId && !p.IsDeleted)
                 .ToList();
         }
 
@@ -69,6 +63,12 @@ namespace My_City_Project.Repositories.Implementations
             var cartItem = _context.CartItems.FirstOrDefault(ci => ci.Id == id && !ci.IsDeleted);
             if (cartItem == null)
                 throw new Exception("CartItem bulunamadı.");
+
+            cartItem.IsDeleted = true;
+            cartItem.UpdatedDate = DateTime.UtcNow;
+
+            _context.SaveChanges();
         }
+
     }
 }

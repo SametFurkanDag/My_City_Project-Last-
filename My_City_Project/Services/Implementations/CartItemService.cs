@@ -21,14 +21,14 @@ namespace My_City_Project.Services.Implementations
             _cartItemRepository.Add(cartItem);
         }
 
+
+        public List<CartItem> GetByCartId(Guid cartId)
+        {
+            return _cartItemRepository.GetAll(cartId);
+        }
         public CartItem GetById(Guid id)
         {
             return _cartItemRepository.GetById(id);
-        }
-
-        public List<CartItem> GetByUserId(Guid userId)
-        {
-            return _cartItemRepository.GetByUserId(userId);
         }
 
 
