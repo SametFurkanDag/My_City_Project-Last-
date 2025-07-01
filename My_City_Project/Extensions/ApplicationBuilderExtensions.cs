@@ -7,9 +7,9 @@ namespace My_City_Project.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
-        public static void ApplyMigrationsAndSeedAdmin(this IApplicationBuilder app)
+        public static void ApplyMigrationsAndSeedAdmin(this WebApplication app)
         {
-            using (var scope = app.ApplicationServices.CreateScope())
+            using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
                 var passwordHelper = scope.ServiceProvider.GetRequiredService<IPasswordHelper>();
@@ -18,18 +18,18 @@ namespace My_City_Project.Extensions
 
                 if (!dbContext.Users.Any(u => u.Role == "Admin"))
                 {
-                    var hashedPassword = passwordHelper.HashPassword("1234");
-
-                    dbContext.Users.Add(new User
+                    var adminUser = new User
                     {
-                        Username = "ADMIN",
-                        PasswordHash = hashedPassword,
-                        Role = "Admin"
-                    });
+                        Id = Guid.NewGuid(),
+                        Username = "admin",
+                        Role = "Admin",
+                        PasswordHash = passwordHelper.HashPassword("1234")
+                    };
+
+                    dbContext.Users.Add(adminUser);
                     dbContext.SaveChanges();
                 }
             }
         }
-
     }
 }

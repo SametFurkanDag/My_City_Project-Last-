@@ -9,7 +9,6 @@ using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
@@ -25,6 +24,7 @@ namespace My_City_Project.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetAllCarts()
         {
@@ -33,6 +33,7 @@ namespace My_City_Project.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetCartById(Guid id)
         {

@@ -33,7 +33,8 @@ namespace My_City_Project.Controllers
             if (!_passwordHelper.VerifyPassword(login.Password, user.PasswordHash))
                 return Unauthorized("Şifre yanlış.");
 
-            var token = _tokenService.CreateToken(user.Username, user.Role);
+            var token = _tokenService.CreateToken(user.Id, user.Username, user.Role);
+
             return Ok(new { token });
         }
 

@@ -4,6 +4,7 @@ using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace My_City_Project.Controllers
 {
@@ -37,7 +38,7 @@ namespace My_City_Project.Controllers
             return Ok(user);
         }
 
-        [HttpPost] // Kayıt işlemi açık
+        [HttpPost] 
         public IActionResult CreateUser([FromBody] User user)
         {
             if (user == null)
@@ -79,5 +80,13 @@ namespace My_City_Project.Controllers
             _userService.DeleteUser(id);
             return Ok("Kullanıcı silindi.");
         }
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult GetCurrentUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+            return Ok(new { UserId = userId });
+        }
+
     }
 }

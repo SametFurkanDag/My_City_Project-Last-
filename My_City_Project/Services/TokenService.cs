@@ -16,14 +16,16 @@ namespace My_City_Project.Services
             _configuration = configuration;
         }
 
-        public string CreateToken(string username, string role)
+        public string CreateToken(Guid userId, string username, string role)
         {
             var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(ClaimTypes.Role, role),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+     {
+        new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+        new Claim(ClaimTypes.Name, username),
+        new Claim(ClaimTypes.Role, role),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    
+        };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -38,5 +40,6 @@ namespace My_City_Project.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
     }
 }
