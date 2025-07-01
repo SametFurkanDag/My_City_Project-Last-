@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using My_City_Project.Data;
-using My_City_Project.Model.Entities;
+﻿using My_City_Project.Model.Entities;
 using My_City_Project.Repositories.Interfaces;
 using My_City_Project.Services.Interfaces;
 using Serilog;
@@ -13,13 +11,11 @@ namespace My_City_Project.Services.Implementations
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderItemRepository _orderItemRepository;
-        private readonly ApplicationContext _context;
 
-        public OrderService(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository, ApplicationContext context)
+        public OrderService(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository)
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
-            _context = context;
         }
 
         public Order GetOrderById(Guid id)
@@ -28,13 +24,9 @@ namespace My_City_Project.Services.Implementations
             var order = _orderRepository.GetById(id);
 
             if (order == null)
-            {
                 Log.Warning("ID {OrderId} ile sipariş bulunamadı.", id);
-            }
             else
-            {
                 Log.Information("ID {OrderId} ile sipariş bulundu.", id);
-            }
 
             return order;
         }
@@ -47,12 +39,11 @@ namespace My_City_Project.Services.Implementations
             return orders;
         }
 
-
         public void CreateOrder(Order order)
         {
-          try
+            try
             {
-                _context.Orders.Add(order);
+                _orderRepository.Add(order);
                 Log.Information("Yeni sipariş eklendi: {@Order}", order);
             }
             catch (Exception ex)
@@ -72,11 +63,13 @@ namespace My_City_Project.Services.Implementations
                     Log.Warning("ID {OrderId} ile sipariş bulunamadı.", order.Id);
                     throw new Exception("Sipariş bulunamadı.");
                 }
+
                 existingOrder.OrderDate = order.OrderDate;
                 existingOrder.UserId = order.UserId;
                 existingOrder.TotalAmount = order.TotalAmount;
                 existingOrder.OrderItems = order.OrderItems;
                 existingOrder.UpdatedDate = DateTime.UtcNow;
+
                 _orderRepository.Update(existingOrder);
                 Log.Information("ID {OrderId} ile sipariş güncellendi.", order.Id);
             }
@@ -92,8 +85,6 @@ namespace My_City_Project.Services.Implementations
             try
             {
                 _orderRepository.Delete(id);
-                _context.SaveChanges();
-
                 Log.Information("ID {OrderId} ile sipariş silindi.", id);
             }
             catch (Exception ex)

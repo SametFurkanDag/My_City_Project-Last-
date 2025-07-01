@@ -2,6 +2,6 @@
 {
     public class GetByIdPlaceDto
     {
-        public Guid PlaceId { get; set; }
+        public Guid Id { get; set; }
     }
 }

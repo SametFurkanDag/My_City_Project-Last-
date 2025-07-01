@@ -8,7 +8,7 @@ namespace My_City_Project.Dtos.OrderDtos
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-        public Guid CartId { get; set; }
+        public Guid Id { get; set; }
 
     }
 }

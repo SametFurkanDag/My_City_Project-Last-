@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services.Interfaces;
 using System;
@@ -18,12 +19,14 @@ namespace My_City_Project.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult<List<User>> GetAllUsers()
         {
             return Ok(_userService.GetAllUsers());
         }
 
+        [Authorize]
         [HttpGet("{id:guid}")]
         public IActionResult GetUserById(Guid id)
         {
@@ -34,7 +37,7 @@ namespace My_City_Project.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost] // Kayıt işlemi açık
         public IActionResult CreateUser([FromBody] User user)
         {
             if (user == null)
@@ -50,6 +53,7 @@ namespace My_City_Project.Controllers
             return Ok(user);
         }
 
+        [Authorize]
         [HttpPut("{id:guid}")]
         public IActionResult UpdateUser(Guid id, [FromBody] User user)
         {
@@ -61,10 +65,10 @@ namespace My_City_Project.Controllers
                 return NotFound("Kullanıcı bulunamadı");
 
             _userService.UpdateUser(user);
-
             return Ok("Kullanıcı güncellendi.");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:guid}")]
         public IActionResult DeleteUser(Guid id)
         {
@@ -73,7 +77,6 @@ namespace My_City_Project.Controllers
                 return NotFound("Kullanıcı bulunamadı");
 
             _userService.DeleteUser(id);
-
             return Ok("Kullanıcı silindi.");
         }
     }

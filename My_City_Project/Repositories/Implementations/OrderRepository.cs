@@ -20,11 +20,11 @@ namespace My_City_Project.Repositories.Implementations
         {
             if (order.Id == Guid.Empty)
                 order.Id = Guid.NewGuid();
+
             var exists = _context.Orders.Any(p => p.Id == order.Id);
             if (exists)
-            {
                 throw new Exception("Bu Id ile sipariş zaten mevcut.");
-            }
+
             _context.Orders.Add(order);
             _context.SaveChanges();
         }
@@ -49,7 +49,6 @@ namespace My_City_Project.Repositories.Implementations
             return orders;
         }
 
-
         public Order GetById(Guid id)
         {
             return _context.Orders.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
@@ -58,6 +57,7 @@ namespace My_City_Project.Repositories.Implementations
         public void Update(Order order)
         {
             _context.Orders.Update(order);
+            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
@@ -66,6 +66,7 @@ namespace My_City_Project.Repositories.Implementations
             if (order != null && !order.IsDeleted)
             {
                 order.IsDeleted = true;
+                _context.SaveChanges();
             }
         }
 
@@ -73,6 +74,5 @@ namespace My_City_Project.Repositories.Implementations
         {
             return _context.Orders.Where(p => p.IsDeleted).ToList();
         }
-
     }
 }

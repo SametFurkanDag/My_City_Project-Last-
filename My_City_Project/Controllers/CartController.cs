@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.CartDtos;
 using My_City_Project.Model.Entities;
@@ -8,9 +9,11 @@ using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
+    
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;

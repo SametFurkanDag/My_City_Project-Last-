@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.ProductDtos;
 using My_City_Project.Dtos.ReportDtos;
@@ -9,11 +10,11 @@ using My_City_Project.Services.Interfaces;
 namespace My_City_Project.Controllers
 {
 
+    [Authorize(Roles = "Admin")]
     [ApiVersion("1.0")]
     [Route("api/v{version:ApiVersion}/[controller]")]
     [ApiController]
-    
-     public class ReportController : ControllerBase
+    public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
         private readonly IMapper _mapper;

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using My_City_Project.Services;
+
 using System.Reflection;
 using System.Text;
+using My_City_Project.Services;
+
 
 namespace My_City_Project.Extensions
 {
@@ -12,10 +15,8 @@ namespace My_City_Project.Extensions
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            
             var assembly = Assembly.GetExecutingAssembly();
 
-            
             var repositoryTypes = assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Repository"))
                 .ToList();
@@ -38,7 +39,6 @@ namespace My_City_Project.Extensions
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            
             var serviceTypes = assembly.GetTypes()
                 .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Service"))
                 .ToList();
@@ -56,7 +56,6 @@ namespace My_City_Project.Extensions
 
             return services;
         }
-       
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
@@ -82,8 +81,7 @@ namespace My_City_Project.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
             });
-
-            services.AddSingleton(new TokenService(jwtKey)); 
+            services.AddScoped<TokenService>();
 
             return services;
         }

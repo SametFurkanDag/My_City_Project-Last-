@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.PlacesDtos;
 using My_City_Project.Model.Entities;
@@ -40,7 +41,7 @@ namespace My_City_Project.Controllers
             var placeDto = _mapper.Map<ResultPlaceDto>(place);
             return Ok(placeDto);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult CreatePlace([FromBody] CreatePlaceDto placeDto)
         {
@@ -50,7 +51,7 @@ namespace My_City_Project.Controllers
             var resultDto = _mapper.Map<ResultPlaceDto>(place);
             return Ok(resultDto);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public IActionResult UpdatePlace(Guid id, [FromBody] UpdatePlaceDto placeDto)
         {
@@ -59,7 +60,7 @@ namespace My_City_Project.Controllers
             var resultDto = _mapper.Map<ResultPlaceDto>(place);
             return Ok(resultDto);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult DeletePlace(Guid id)
         {

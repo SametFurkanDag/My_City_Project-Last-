@@ -1,4 +1,5 @@
-﻿namespace My_City_Project.Dtos.ProductDtos
+﻿using My_City_Project.Model.Entities;
+namespace My_City_Project.Dtos.ProductDtos
 {
     public class ResultProductDto
     {

@@ -2,6 +2,7 @@
 using My_City_Project.Data;
 using My_City_Project.Model.Entities;
 using My_City_Project.Repositories.Interfaces;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,13 @@ namespace My_City_Project.Repositories.Implementations
 
         public void Add(CartItem cartItem)
         {
-            _context.CartItems.Add(cartItem);
+
+            if (cartItem.Id == Guid.Empty)
+                cartItem.Id = Guid.NewGuid();
+            var exists = _context.CartItems.Any(p => p.Id == cartItem.Id);
+            
+
+           _context.CartItems.Add(cartItem);
             _context.SaveChanges();
         }
         public CartItem GetById(Guid id)

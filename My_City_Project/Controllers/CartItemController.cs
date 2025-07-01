@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.CartItemDtos;
 using My_City_Project.Dtos.ReportDtos;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 
 namespace My_City_Project.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
@@ -38,10 +40,11 @@ namespace My_City_Project.Controllers
         public IActionResult CreateCartItem([FromBody] CreateCartItemDto createCartItemDto)
         {
             var cartItem = _mapper.Map<CartItem>(createCartItemDto);
-            if (cartItem == null)
+            if (cartItem != null && cartItem.Id == Guid.Empty)
             {
                 cartItem.Id = Guid.NewGuid();
             }
+
 
             _cartItemService.Add(cartItem);
             var report = _mapper.Map<CartItem>(createCartItemDto);

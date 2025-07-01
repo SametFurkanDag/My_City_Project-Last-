@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.VendorDto;
 using My_City_Project.Dtos.VendorDtos;
@@ -29,7 +30,7 @@ namespace My_City_Project.Controllers
             var result = _mapper.Map<List<ResultVendorDto>>(vendors);
             return Ok(result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult CreateVendor([FromBody] CreateVendorDto createVendorDto)
         {
@@ -52,7 +53,7 @@ namespace My_City_Project.Controllers
             var result = _mapper.Map<GetByIdVendorDto>(vendor);
             return Ok(result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public IActionResult UpdateVendor(Guid id, [FromBody] UpdateVendorDto vendorUpdateDto)
         {
@@ -64,7 +65,7 @@ namespace My_City_Project.Controllers
             var vendorDto = _mapper.Map<ResultVendorDto>(vendor);
             return Ok(vendorDto);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult DeleteVendor(Guid id)
         {

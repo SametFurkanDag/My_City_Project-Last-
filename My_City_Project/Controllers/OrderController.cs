@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos.OrderDtos;
 using My_City_Project.Model.Entities;
@@ -21,7 +22,7 @@ namespace My_City_Project.Controllers
             _orderService = orderService;
             _mapper = mapper;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetAllOrders()
         {
@@ -29,7 +30,7 @@ namespace My_City_Project.Controllers
             var result = _mapper.Map<List<ResultOrderDto>>(orders);
             return Ok(result);
         }
-
+        [Authorize]
         [HttpGet("{id:guid}")]
         public IActionResult GetOrderById(Guid id)
         {
@@ -40,7 +41,7 @@ namespace My_City_Project.Controllers
             var result = _mapper.Map<GetByIdOrderDto>(order);
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {

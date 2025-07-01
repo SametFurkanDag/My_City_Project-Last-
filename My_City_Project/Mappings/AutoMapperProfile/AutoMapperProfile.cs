@@ -20,13 +20,16 @@ namespace My_City_Project.Mappings
         public AutoMapperProfile()
         {
             CreateMap<CreateProductDto, Product>().ReverseMap();
-            CreateMap<UpdateProductDto, Product>().ReverseMap();
-            CreateMap<ResultProductDto, Product>().ReverseMap();
+            CreateMap<UpdateProductDto, Product>().ReverseMap(); 
+            CreateMap<Product, ResultProductDto>()
+            .ForMember(dest => dest.VendorName, opt => opt.MapFrom(src => src.vendor != null ? src.vendor.VendorName : null));
             CreateMap<GetByIdProductDto, Product>().ReverseMap();
             
             CreateMap<CreateCartItemDto, CartItem>().ReverseMap();
-            CreateMap<UpdateCartItemDto, CartItem>().ReverseMap();
-            CreateMap<ResultCartItemDto, CartItem>().ReverseMap();
+            CreateMap<UpdateCartItemDto, CartItem>().ReverseMap(); 
+            CreateMap<CartItem, ResultCartItemDto>()
+    .ForMember(dest => dest.CartItemId, opt => opt.MapFrom(src => src.Id));
+
             CreateMap<GetByIdCartItemDto, CartItem>().ReverseMap();
 
             CreateMap<CreatePlaceDto, Places>().ReverseMap();

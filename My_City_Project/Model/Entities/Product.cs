@@ -8,6 +8,7 @@ namespace My_City_Project.Model.Entities
         public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }
         public Guid VendorId { get; set; }
+        public Vendor vendor { get; set; }
 
         public ICollection<CartItem> CartItems { get; set; }
     }

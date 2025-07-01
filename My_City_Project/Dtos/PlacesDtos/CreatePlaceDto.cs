@@ -4,6 +4,6 @@
     {
         public string PlaceName { get; set; }
         public string PlaceLocation { get; set; }
-        public Guid VendorId { get; set; }
+        public Guid Id { get; set; }
     }
 }

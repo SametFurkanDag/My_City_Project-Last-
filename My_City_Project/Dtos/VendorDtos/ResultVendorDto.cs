@@ -3,6 +3,6 @@
     public class ResultVendorDto
     {
         public string VendorName { get; set; }
-        public int VendorId { get; set; }
+        public Guid Id { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using My_City_Project.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using My_City_Project.Data;
 using My_City_Project.Model.Entities;
 using My_City_Project.Repositories.Interfaces;
 using System;
@@ -34,18 +35,27 @@ namespace My_City_Project.Repositories.Implementations
             _context.Products.Add(product);
             _context.SaveChanges();
         }
+
         public List<Product> GetAll()
         {
-            return _context.Products.Where(p => !p.IsDeleted).ToList();
+            return _context.Products
+                .Where(p => !p.IsDeleted)
+                .Include(p => p.vendor)   
+                .ToList();
         }
+
         public Product GetById(Guid id)
         {
-            return _context.Products.FirstOrDefault(p => p.Id == id && !p.IsDeleted);
+            return _context.Products
+                .Include(p => p.vendor)  
+                .FirstOrDefault(p => p.Id == id && !p.IsDeleted);
         }
 
         public void Update(Product product)
         {
-            var existingProduct = _context.Products.FirstOrDefault(p => p.Id == product.Id && !p.IsDeleted);
+            var existingProduct = _context.Products
+                .FirstOrDefault(p => p.Id == product.Id && !p.IsDeleted);
+
             if (existingProduct == null)
                 throw new Exception("Güncellenecek ürün bulunamadı.");
 
@@ -53,9 +63,9 @@ namespace My_City_Project.Repositories.Implementations
             existingProduct.ProductPrice = product.ProductPrice;
             existingProduct.VendorId = product.VendorId;
             existingProduct.UpdatedDate = DateTime.UtcNow;
+
             _context.SaveChanges();
         }
-
 
         public void Delete(Guid id)
         {
@@ -69,7 +79,9 @@ namespace My_City_Project.Repositories.Implementations
 
         public List<Product> GetDeleted()
         {
-            return _context.Products.Where(p => p.IsDeleted).ToList();
-        } 
+            return _context.Products
+                .Where(p => p.IsDeleted)
+                .ToList();
+        }
     }
 }

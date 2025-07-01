@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using My_City_Project.Data;
+using My_City_Project.Dtos.AuthDtos;
 using My_City_Project.Helpers;
 using My_City_Project.Model.Entities;
 using My_City_Project.Services;
-using My_City_Project.Services.Interfaces;
-using System;
-using System.Linq;
 
 namespace My_City_Project.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly ApplicationContext _context;
@@ -25,52 +23,44 @@ namespace My_City_Project.Controllers
             _passwordHelper = passwordHelper;
         }
 
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterRequest request)
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginDto login)
         {
-            if (_context.Users.Any(u => u.Username == request.Username))
-                return BadRequest("Bu kullanıcı adı zaten kayıtlı.");
+            var user = _context.Users.FirstOrDefault(u => u.Username == login.Username);
+            if (user == null)
+                return Unauthorized("Kullanıcı bulunamadı.");
+
+            if (!_passwordHelper.VerifyPassword(login.Password, user.PasswordHash))
+                return Unauthorized("Şifre yanlış.");
+
+            var token = _tokenService.CreateToken(user.Username, user.Role);
+            return Ok(new { token });
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest("Kullanıcı adı ve şifre gerekli.");
+
+            var existingUser = _context.Users.FirstOrDefault(u => u.Username == dto.Username);
+            if (existingUser != null)
+                return BadRequest("Bu kullanıcı zaten kayıtlı.");
+
+            var hashedPassword = _passwordHelper.HashPassword(dto.Password);
 
             var user = new User
             {
                 Id = Guid.NewGuid(),
-                Username = request.Username,
-                PasswordHash = _passwordHelper.HashPassword(request.Password),
-                Role = request.Role ?? "User"
+                Username = dto.Username,
+                PasswordHash = hashedPassword,
+                Role = "User"
             };
 
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return Ok("Kullanıcı başarıyla kayıt oldu.");
+            return Ok("Kayıt başarılı.");
         }
-
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
-        {
-            var user = _context.Users.FirstOrDefault(x => x.Username == request.Username);
-            if (user == null)
-                return Unauthorized("Geçersiz kullanıcı adı veya şifre");
-
-            bool validPassword = _passwordHelper.VerifyPassword(request.Password, user.PasswordHash);
-            if (!validPassword)
-                return Unauthorized("Geçersiz kullanıcı adı veya şifre");
-
-            var token = _tokenService.CreateToken(user.Username, user.Role);
-            return Ok(new { token });
-        }
-    }
-
-    public class RegisterRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
-    }
-
-    public class LoginRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }

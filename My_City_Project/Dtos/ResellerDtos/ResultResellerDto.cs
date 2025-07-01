@@ -2,7 +2,7 @@
 {
     public class ResultResellerDto
     {
-        public Guid ResellerId { get; set; }
+        public Guid Id { get; set; }
         public string ResellerName { get; set; }
         public string ResellerLocation { get; set; }
     }

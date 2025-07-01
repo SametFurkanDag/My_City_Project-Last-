@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using My_City_Project.Dtos;
 using My_City_Project.Dtos.ProductDtos;
@@ -39,13 +40,16 @@ namespace My_City_Project.Controllers
             var result = _mapper.Map<GetByIdProductDto>(product);
             return Ok(result);
         }
+        [Authorize(Roles = "Admin,Vendor")]
         [HttpPost]
         public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
         {
             var product = _mapper.Map<Product>(createProductDto);
             _productService.CreateProduct(product);
             return Ok();
+
         }
+        [Authorize(Roles = "Admin,Vendor")]
         [HttpPut("{id}")]
         public IActionResult UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
         {
@@ -58,6 +62,7 @@ namespace My_City_Project.Controllers
             _productService.UpdateProduct(product);
             return Ok();
         }
+        [Authorize(Roles = "Admin,Vendor")]
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(Guid id)
         {
